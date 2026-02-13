@@ -1,0 +1,11 @@
+# Reglas de desarrollo para kapo-reclutamiento
+
+## Tailwind CSS
+- Usar siempre utilidades canónicas definidas en theme (colors, spacing, radius, fonts, shadows, zIndex, etc.)
+- Nunca usar sintaxis arbitraria con var() o [] cuando exista una clase equivalente
+- Preferir clases como `text-text-primary` sobre `text-[var(--text-primary)]`
+- Mantener consistencia con el sistema de diseño definido en globals.css
+
+## UI - COMPONENTS
+- Priorizar el uso de componets globales suplantando a los default, a menos que se indique
+- cada ruta tiene sus propios components, utils, etc personalizados (si se usa form, views, pdfs etc y se solicita modal usar el modal compoent global)

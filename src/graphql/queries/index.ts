@@ -1,0 +1,42 @@
+/**
+ * 🔍 GRAPHQL QUERIES - CONSULTAS DE LECTURA
+ *
+ * Responsabilidad: Definir queries GraphQL para obtener datos
+ * Flujo: Importado por hooks → Ejecutado por GraphQL client
+ */
+
+export {
+  GET_CONVOCATORIAS_QUERY,
+  GET_CONVOCATORIA_QUERY,
+  GET_CONVOCATORIA_POR_REQUERIMIENTO_QUERY
+} from './convocatorias.queries'
+
+export {
+  OBTENER_FORMULARIO_CONFIG_QUERY,
+  OBTENER_FORMULARIO_CONFIG_POR_ID_QUERY,
+  LISTAR_FORMULARIOS_CONFIG_QUERY
+} from './formulario-config.queries'
+
+export {
+  LISTAR_APLICACIONES_QUERY,
+  OBTENER_APLICACION_QUERY,
+  OBTENER_ESTADISTICAS_CONVOCATORIA_QUERY,
+  GET_KANBAN_DATA_QUERY
+} from './aplicacion.queries'
+
+// Entrevista de llamada queries
+export {
+  OBTENER_ENTREVISTA_LLAMADA_QUERY,
+  OBTENER_ENTREVISTA_LLAMADA_POR_APLICACION_QUERY,
+  EXISTE_ENTREVISTA_LLAMADA_PARA_APLICACION_QUERY,
+  LISTAR_ENTREVISTAS_LLAMADA_QUERY
+} from './entrevista-llamada.queries'
+
+// Historial candidato queries
+export {
+  OBTENER_HISTORIAL_APLICACION_QUERY,
+  OBTENER_HISTORIAL_CANDIDATO_QUERY,
+  LISTAR_HISTORIAL_QUERY,
+  OBTENER_ULTIMO_CAMBIO_ESTADO_QUERY,
+  GENERAR_ESTADISTICAS_CONVERSION_QUERY
+} from './historial-candidato.queries'
