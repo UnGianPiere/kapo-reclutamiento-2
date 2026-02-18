@@ -1,8 +1,20 @@
+'use client';
+
+import { useEffect } from 'react';
+
 export default function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    // Forzar tema light removiendo la clase 'dark'
+    const root = document.documentElement;
+    root.classList.remove('dark');
+
+    // Cleanup: no restaurar ya que queremos que sea permanente para esta sección
+  }, []);
+
   return (
     <>
       {/* Background layer */}
