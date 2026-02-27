@@ -16,6 +16,7 @@ export const OBTENER_ENTREVISTA_REGULAR_QUERY = `
       entrevistador_id
       entrevistador_nombre
       observaciones
+      archivo_sustento
       resultado
       created_at
       updated_at
@@ -37,6 +38,7 @@ export const OBTENER_ENTREVISTA_REGULAR_POR_APLICACION_QUERY = `
       entrevistador_id
       entrevistador_nombre
       observaciones
+      archivo_sustento
       resultado
       created_at
       updated_at
@@ -64,6 +66,7 @@ export const LISTAR_ENTREVISTAS_REGULARES_QUERY = `
       entrevistador_id
       entrevistador_nombre
       observaciones
+      archivo_sustento
       resultado
       created_at
       updated_at

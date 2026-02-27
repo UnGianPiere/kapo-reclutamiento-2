@@ -166,7 +166,16 @@ export function ReferenciaTab({ aplicacion, onValidationChange, viewOnly = false
         try {
             let archivosUrls: string[] = [...formData.archivosurl]
             if (formData.archivos.length > 0) {
-                const resultado = await uploadMultipleFiles(formData.archivos, { tipo: 'CV_DOCUMENTOS' })
+                const resultado = await uploadMultipleFiles(formData.archivos, { 
+                    tipo: 'CV_DOCUMENTOS',
+                    allowedTypes: [
+                        'application/pdf', 'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'image/jpeg', 'image/png', 'image/jpg'
+                    ]
+                })
                 if (resultado.successful.length > 0) {
                     archivosUrls = [...archivosUrls, ...resultado.successful.map(f => f.url)]
                 }
@@ -244,12 +253,14 @@ export function ReferenciaTab({ aplicacion, onValidationChange, viewOnly = false
         const allowedTypes = [
             'application/pdf', 'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'image/jpeg', 'image/png', 'image/jpg'
         ]
 
         const validateFile = (file: File): string | null => {
             if (file.size > maxSize) return `El archivo "${file.name}" supera el límite de 3MB`
-            if (!allowedTypes.includes(file.type)) return `Archivo no permitido: PDF, DOC, DOCX, JPG, PNG`
+            if (!allowedTypes.includes(file.type)) return `Archivo no permitido: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG`
             return null
         }
 
@@ -289,7 +300,7 @@ export function ReferenciaTab({ aplicacion, onValidationChange, viewOnly = false
                 <input
                     ref={fileInputRef}
                     type="file"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                     multiple
                     onChange={(e) => processFiles(e.target.files)}
                     className="hidden"
@@ -315,7 +326,7 @@ export function ReferenciaTab({ aplicacion, onValidationChange, viewOnly = false
                         <p className="text-xs font-medium text-gray-700">
                             {totalUsed >= maxFiles ? 'Límite de archivos alcanzado' : 'Adjuntar archivos'}
                         </p>
-                        <p className="text-xs text-gray-400">PDF, DOC, JPG · máx. 3MB · {totalUsed}/{maxFiles}</p>
+                        <p className="text-xs text-gray-400">PDF, DOC, XLS, JPG · máx. 3MB · {totalUsed}/{maxFiles}</p>
                     </div>
                     {totalUsed > 0 && (
                         <span className="flex-shrink-0 text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-secondary)' }}>

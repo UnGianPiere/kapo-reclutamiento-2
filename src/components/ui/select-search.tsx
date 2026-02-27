@@ -313,11 +313,7 @@ export function SelectSearch({
       {/* Input editable - mismo estilo que el Input original */}
       <div className="relative flex items-center w-full">
         {showSearchIcon && (
-          isSearching ? (
-            <Loader2 className="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-2.5 w-2.5 text-text-secondary pointer-events-none z-10 animate-spin" />
-          ) : (
-            <Search className="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-2.5 w-2.5 text-text-secondary pointer-events-none z-10" />
-          )
+          <Search className="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-2.5 w-2.5 text-text-secondary pointer-events-none z-10" />
         )}
         <input
           ref={inputRef}

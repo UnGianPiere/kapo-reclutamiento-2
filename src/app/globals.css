@@ -149,6 +149,12 @@ button[disabled] {
   cursor: not-allowed;
 }
 
+/* Deshabilitar la opacidad por defecto de elementos deshabilitados */
+*:disabled,
+*[disabled] {
+  opacity: 0.95 !important;
+}
+
 /* Estilos de la barra de desplazamiento */
 html, body {
   scrollbar-width: thin;

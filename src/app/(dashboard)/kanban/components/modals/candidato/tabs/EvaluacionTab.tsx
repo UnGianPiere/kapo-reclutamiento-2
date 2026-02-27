@@ -39,7 +39,8 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
     const [fechaAprobacion, setFechaAprobacion] = useState(new Date().toISOString().split('T')[0])
     const [fechaEvaluacion, setFechaEvaluacion] = useState(new Date().toISOString().split('T')[0])
     const [version, setVersion] = useState(1)
-    const [evaluadorId, setEvaluadorId] = useState('')
+
+    // Estado para evaluador (simplificado como en otras tabs)
     const [evaluadorNombre, setEvaluadorNombre] = useState('')
 
     // Código hardcoded
@@ -77,21 +78,31 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
     const [originalData, setOriginalData] = useState<{
         fechaAprobacion: string
         fechaEvaluacion: string
-        evaluadorId: string
         evaluadorNombre: string
         selectedAction: string
         criterios: typeof criterios
         controles: typeof controles
     } | null>(null)
 
+    // Estado para acción seleccionada
+    const [selectedAction, setSelectedAction] = useState('')
+
     // Calcular puntaje total y nivel de riesgo cuando criterios cambian
     useEffect(() => {
         let total = 0
         for (const key in criterios) {
             const criterio = criterios[key]
-            if (criterio.respuesta === 'SI') total += criterio.puntaje
-            else if (criterio.respuesta === 'NO') total += 0
-            else if (criterio.respuesta === 'NA') total += 0
+            // Recalcular el puntaje para cada criterio basado en su respuesta
+            const puntajeCalculado = calcularPuntajeItem(key, criterio.respuesta)
+            total += puntajeCalculado
+            
+            // Actualizar el puntaje almacenado si es diferente
+            if (criterio.puntaje !== puntajeCalculado) {
+                setCriterios(prev => ({
+                    ...prev,
+                    [key]: { ...prev[key], puntaje: puntajeCalculado }
+                }))
+            }
         }
         
         let nivel = 'BAJO'
@@ -103,9 +114,6 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
         setPuntajeTotal(total)
         setNivelRiesgo(nivel)
     }, [criterios])
-
-    // Estado para acción seleccionada
-    const [selectedAction, setSelectedAction] = useState('')
 
     // Call onActionChange when selectedAction changes
     useEffect(() => {
@@ -119,6 +127,9 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
     const [isPdfModalOpen, setIsPdfModalOpen] = useState(false)
     const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null)
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
+
+    // Hook para obtener usuario autenticado
+    const { user } = useAuth()
 
     // Hooks para empleados
     const { empleados, loading: loadingEmpleados } = useEmpleados()
@@ -142,7 +153,6 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
             setFechaAprobacion(existingDebidaDiligencia.fecha_aprobacion ? new Date(existingDebidaDiligencia.fecha_aprobacion).toISOString().split('T')[0] : new Date().toISOString().split('T')[0])
             setFechaEvaluacion(existingDebidaDiligencia.fecha_evaluacion ? new Date(existingDebidaDiligencia.fecha_evaluacion).toISOString().split('T')[0] : new Date().toISOString().split('T')[0])
             setVersion(existingDebidaDiligencia.created_at ? 1 : 1) // TODO: Implementar versionado
-            setEvaluadorId(existingDebidaDiligencia.evaluador_id)
             setEvaluadorNombre(existingDebidaDiligencia.nombre_evaluador)
             setSelectedAction(existingDebidaDiligencia.accion || '')
 
@@ -169,7 +179,6 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
             setOriginalData({
                 fechaAprobacion,
                 fechaEvaluacion,
-                evaluadorId,
                 evaluadorNombre,
                 selectedAction,
                 criterios: criteriosLoaded,
@@ -191,7 +200,6 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
             const currentData = {
                 fechaAprobacion,
                 fechaEvaluacion,
-                evaluadorId,
                 evaluadorNombre,
                 selectedAction,
                 criterios,
@@ -202,7 +210,7 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
         } else {
             setHasChanges(false)
         }
-    }, [fechaAprobacion, fechaEvaluacion, evaluadorId, evaluadorNombre, selectedAction, criterios, controles, originalData, isEditMode])
+    }, [fechaAprobacion, fechaEvaluacion, evaluadorNombre, selectedAction, criterios, controles, originalData, isEditMode])
 
     // Generar PDF cuando se abre el modal
     useEffect(() => {
@@ -237,7 +245,6 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
         if (originalData) {
             setFechaAprobacion(originalData.fechaAprobacion)
             setFechaEvaluacion(originalData.fechaEvaluacion)
-            setEvaluadorId(originalData.evaluadorId)
             setEvaluadorNombre(originalData.evaluadorNombre)
             setSelectedAction(originalData.selectedAction)
             setCriterios(originalData.criterios)
@@ -263,9 +270,12 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
         }
 
         try {
+            // Encontrar el usuario seleccionado por nombre
+            const selectedUser = empleados.find(e => `${e.nombres} ${e.ap_paterno} ${e.ap_materno}`.trim() === evaluadorNombre.trim())
+
             const baseInput = {
-                evaluador_id: evaluadorId,
-                nombre_evaluador: evaluadorNombre,
+                evaluador_id: selectedUser?.id || user?.id || '',
+                nombre_evaluador: evaluadorNombre || user?.nombresA || 'Usuario no identificado',
                 fecha_aprobacion: fechaAprobacion || undefined,
                 fecha_evaluacion: fechaEvaluacion,
                 criterios,
@@ -300,7 +310,6 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
             setOriginalData({
                 fechaAprobacion,
                 fechaEvaluacion,
-                evaluadorId,
                 evaluadorNombre,
                 selectedAction,
                 criterios,
@@ -350,7 +359,7 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
     const validateForm = (): string[] => {
         const errors: string[] = []
 
-        if (!evaluadorId?.trim()) {
+        if (!evaluadorNombre?.trim()) {
             errors.push('Evaluador')
         }
 
@@ -517,12 +526,7 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
                                 <td className="border border-gray-300 p-2">
                                     <SelectSearch
                                         value={evaluadorNombre}
-                                        onChange={(value) => {
-                                            setEvaluadorNombre(value || '')
-                                            // Buscar el ID correspondiente
-                                            const selected = empleados.find(e => `${e.nombres} ${e.ap_paterno} ${e.ap_materno}`.trim() === value?.trim())
-                                            setEvaluadorId(selected?.id || '')
-                                        }}
+                                        onChange={(value) => setEvaluadorNombre(value || '')}
                                         placeholder="Seleccionar evaluador..."
                                         className="h-8 text-xs"
                                         disabled={!isEditMode && !!existingDebidaDiligencia}
@@ -910,7 +914,7 @@ export function EvaluacionTab({ aplicacion, onValidationChange, onActionChange, 
                 </>
             )}
 
-            {selectedAction === 'ACEPTAR_CON_CONTROLES' && (
+            {selectedAction === 'ACEPTAR_CON_CONTROLES' && puntajeTotal > 5 && (
                 <>
                     {/* Controles */}
                     <section>

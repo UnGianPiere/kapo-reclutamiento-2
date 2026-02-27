@@ -85,8 +85,8 @@ const HistorialAplicacionModal: React.FC<HistorialAplicacionModalProps> = ({
             onClose={onClose}
             title={`Historial de ${candidatoNombre}`}
             size="lg-tall"
-        >
-            <div className="p-4 h-full">
+        >   
+            <div className="p-2 sm:p-6 border-dashed border border-gray-200 rounded-lg h-full ">
                 {isLoading && (
                     <div className="flex items-center justify-center py-8">
                         <Loader2 className="w-6 h-6 animate-spin text-primary" />
@@ -156,19 +156,7 @@ const HistorialAplicacionModal: React.FC<HistorialAplicacionModalProps> = ({
                                                         <span>{item.realizadoPorNombre}</span>
                                                     </div>
 
-                                                    {item.tiempoEnEstadoAnterior && (
-                                                        <div className="flex items-center gap-1.5">
-                                                            <Clock className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-                                                            <span>{item.tiempoEnEstadoAnterior} días</span>
-                                                        </div>
-                                                    )}
-
-                                                    {item.etapaProceso && (
-                                                        <div className="flex items-center gap-1.5">
-                                                            <FileText className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} />
-                                                            <span>{item.etapaProceso}</span>
-                                                        </div>
-                                                    )}
+                                                    
                                                 </div>
 
                                                 {item.motivo && (

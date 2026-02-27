@@ -217,8 +217,6 @@ export default function CandidateModal({ isOpen, onClose, aplicacion, headerBack
 
     // Hook para obtener el tema
     const { theme } = useTheme()
-    console.log('[FRONTEND] Usuario actual:', user)
-    console.log('[FRONTEND] user?.id:', user?.id)
 
     // Hook para actualizar aplicación (cambiar convocatoria)
     const actualizarAplicacionMutation = useMutation({

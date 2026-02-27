@@ -28,6 +28,7 @@ export interface EntrevistaRegular {
   entrevistador_id: string
   entrevistador_nombre: string
   observaciones?: string
+  archivo_sustento?: string[]
   resultado?: string
   created_at: string
   updated_at: string
@@ -44,6 +45,7 @@ export interface CrearEntrevistaRegularInput {
   entrevistador_id: string
   entrevistador_nombre: string
   observaciones?: string
+  archivo_sustento?: string[]
   resultado?: string
 }
 
@@ -55,6 +57,7 @@ export interface ActualizarEntrevistaRegularInput {
   entrevistador_id?: string
   entrevistador_nombre?: string
   observaciones?: string
+  archivo_sustento?: string[]
   resultado?: string
 }
 

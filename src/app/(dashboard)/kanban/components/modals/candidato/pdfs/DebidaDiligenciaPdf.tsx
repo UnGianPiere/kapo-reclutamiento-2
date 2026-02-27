@@ -442,7 +442,7 @@ export function DebidaDiligenciaPdf({ aplicacion, debidaDiligencia }: Props) {
                             <Text>Puesto al que Postula</Text>
                         </View>
                         <View style={[s.cell, s.cellValue, { flex: 1 }]}>
-                            <Text>{convocatoria?.cargoNombre || '—'}</Text>
+                            <Text>{convocatoria?.cargoNombre || '—'} - {convocatoria?.especialidad_nombre || '—'}</Text>
                         </View>
                         <View style={[s.cell, s.cellLabel, { width: '15%' }]}>
                             <Text>Evaluador</Text>
